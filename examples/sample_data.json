@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Смартфон X",
+    "description": "Мощный смартфон с большим экраном",
+    "price": 59999.99,
+    "in_stock": true,
+    "category": "electronics"
+  },
+  {
+    "name": "Наушники Pro",
+    "description": "Беспроводные наушники с шумоподавлением",
+    "price": 8999.99,
+    "in_stock": true,
+    "category": "audio"
+  },
+  {
+    "name": "Чехол-книжка",
+    "description": "Защитный чехол из экокожи",
+    "price": 1499.99,
+    "in_stock": false,
+    "category": "accessories"
+  },
+  {
+    "name": "Зарядное устройство",
+    "description": "Быстрая зарядка 65W",
+    "price": 2999.99,
+    "in_stock": true,
+    "category": "accessories"
+  },
+  {
+    "name": "Планшет Lite",
+    "description": "Лёгкий планшет для учёбы",
+    "price": 24999.99,
+    "in_stock": true,
+    "category": "electronics"
+  }
+]

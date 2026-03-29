@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: benchmark-postgres
+    environment:
+      POSTGRES_USER: benchmark
+      POSTGRES_PASSWORD: benchmark
+      POSTGRES_DB: benchmark
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U benchmark"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - benchmark-network
+
+  fastapi:
+    build:
+      context: ./fastapi_app
+      dockerfile: Dockerfile
+    container_name: benchmark-fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://benchmark:benchmark@postgres:5432/benchmark
+      DEBUG: "False"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - benchmark-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  flask:
+    build:
+      context: ./flask_app
+      dockerfile: Dockerfile
+    container_name: benchmark-flask
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgresql://benchmark:benchmark@postgres:5432/benchmark
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - benchmark-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+networks:
+  benchmark-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

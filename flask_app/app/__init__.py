@@ -1,0 +1,1 @@
+"""Flask Benchmark Application"""
