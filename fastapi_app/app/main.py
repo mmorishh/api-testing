@@ -1,4 +1,6 @@
-"""FastAPI Benchmark Application - Main entry point"""
+"""
+FastAPI Benchmark Application - Main entry point
+"""
 
 from fastapi import FastAPI, Depends, HTTPException, status, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -94,7 +96,18 @@ async def create_item(
     db: AsyncSession = Depends(get_db)
 ) -> ItemResponse:
     """Create a new item"""
-    db_item = Item(**item.model_dump())
+    from datetime import datetime
+    now = datetime.utcnow()
+    
+    db_item = Item(
+        name=item.name,
+        description=item.description,
+        price=item.price,
+        in_stock=item.in_stock,
+        category=item.category,
+        created_at=now,
+        updated_at=now
+    )
     db.add(db_item)
     await db.commit()
     await db.refresh(db_item)
@@ -146,8 +159,10 @@ async def update_item(
         )
     
     update_data = item_update.model_dump(exclude_unset=True)
-    for field, value in update_data.items():
-        setattr(item, field, value)
+    if update_data:
+        for field, value in update_data.items():
+            setattr(item, field, value)
+        item.updated_at = datetime.utcnow()
     
     await db.commit()
     await db.refresh(item)
